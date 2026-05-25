@@ -202,7 +202,7 @@ private fun SwipeStack(
                                 v < -threshold -> scope.launch {
                                     offsetX.animateTo(-screenWidthPx * 1.5f, tween(220))
                                     viewModel.discard()
-                                    if (state.pendingTrash.size + 1 >= 20) onAutoFlush()
+                                    if (state.pendingTrash.size + 1 >= 60) onAutoFlush()
                                 }
                                 else -> scope.launch { offsetX.animateTo(0f, spring()) }
                             }
