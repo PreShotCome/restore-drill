@@ -1,12 +1,12 @@
-package com.lathe.viewmodel
+package com.lethe.viewmodel
 
 import android.app.Application
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.lathe.data.Photo
-import com.lathe.data.PhotoRepository
+import com.lethe.data.Photo
+import com.lethe.data.PhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

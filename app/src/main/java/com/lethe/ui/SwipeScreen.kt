@@ -1,4 +1,4 @@
-package com.lathe.ui
+package com.lethe.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lathe.viewmodel.SwipeViewModel
+import com.lethe.viewmodel.SwipeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -71,7 +71,7 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Lathe",
+                text = "Lethe",
                 fontWeight = FontWeight.Black,
                 fontSize = 28.sp,
                 color = MaterialTheme.colorScheme.onSurface,

@@ -1,4 +1,4 @@
-package com.lathe.data
+package com.lethe.data
 
 import android.content.ContentResolver
 import android.content.ContentUris

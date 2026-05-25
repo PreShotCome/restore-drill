@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.lathe"
+    namespace = "com.lethe"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.lathe"
+        applicationId = "com.lethe"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

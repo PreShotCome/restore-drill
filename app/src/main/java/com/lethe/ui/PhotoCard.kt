@@ -1,4 +1,4 @@
-package com.lathe.ui
+package com.lethe.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,10 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.lathe.data.Photo
-import com.lathe.ui.theme.LatheGreen
-import com.lathe.ui.theme.LatheRed
-import com.lathe.ui.theme.LatheSurface
+import com.lethe.data.Photo
+import com.lethe.ui.theme.LetheGreen
+import com.lethe.ui.theme.LetheRed
+import com.lethe.ui.theme.LetheSurface
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -33,7 +33,7 @@ fun PhotoCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .background(LatheSurface),
+            .background(LetheSurface),
     ) {
         AsyncImage(
             model = photo.uri,
@@ -44,7 +44,7 @@ fun PhotoCard(
 
         val progress = min(abs(swipeOffset) / swipeThreshold, 1f)
         if (progress > 0.02f) {
-            val tint = if (swipeOffset < 0) LatheRed else LatheGreen
+            val tint = if (swipeOffset < 0) LetheRed else LetheGreen
             Box(
                 Modifier
                     .fillMaxSize()

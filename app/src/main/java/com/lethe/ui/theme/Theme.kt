@@ -1,4 +1,4 @@
-package com.lathe.ui.theme
+package com.lethe.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -7,20 +7,20 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColors = darkColorScheme(
-    background = LatheBackground,
-    surface = LatheSurface,
-    onSurface = LatheOnSurface,
-    primary = LatheGreen,
-    secondary = LatheRed,
+    background = LetheBackground,
+    surface = LetheSurface,
+    onSurface = LetheOnSurface,
+    primary = LetheGreen,
+    secondary = LetheRed,
 )
 
 private val LightColors = lightColorScheme(
-    primary = LatheGreen,
-    secondary = LatheRed,
+    primary = LetheGreen,
+    secondary = LetheRed,
 )
 
 @Composable
-fun LatheTheme(
+fun LetheTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {

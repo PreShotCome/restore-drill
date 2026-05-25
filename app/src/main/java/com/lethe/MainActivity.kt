@@ -1,4 +1,4 @@
-package com.lathe
+package com.lethe
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -24,15 +24,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.lathe.ui.SwipeScreen
-import com.lathe.ui.theme.LatheTheme
+import com.lethe.ui.SwipeScreen
+import com.lethe.ui.theme.LetheTheme
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LatheTheme {
+            LetheTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
@@ -76,7 +76,7 @@ private fun PermissionGate(content: @Composable () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                "Lathe needs access to your photos.",
+                "Lethe needs access to your photos.",
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Button(onClick = { launcher.launch(photoPermission) }) {

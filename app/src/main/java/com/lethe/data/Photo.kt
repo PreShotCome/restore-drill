@@ -1,4 +1,4 @@
-package com.lathe.data
+package com.lethe.data
 
 import android.net.Uri
 

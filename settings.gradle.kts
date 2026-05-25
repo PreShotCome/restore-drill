@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Lathe"
+rootProject.name = "Lethe"
 include(":app")

@@ -1,4 +1,4 @@
-# Lathe
+# Lethe
 
 Tinder for your photo gallery.
 
