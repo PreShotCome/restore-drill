@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -44,11 +45,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lethe.R
 import com.lethe.viewmodel.SwipeViewModel
 import kotlinx.coroutines.launch
 
@@ -258,18 +261,24 @@ private fun SwipeStack(
 private fun FinishedView(pending: Int, onApply: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_lethe_logo),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            modifier = Modifier.size(96.dp),
+        )
         Text(
-            "All done.",
+            "All forgotten.",
             fontWeight = FontWeight.Bold,
-            fontSize = 22.sp,
+            fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onSurface,
         )
         if (pending > 0) {
             Text(
-                "$pending photo${if (pending == 1) "" else "s"} ready to move to Trash.",
-                color = MaterialTheme.colorScheme.onSurface,
+                "$pending photo${if (pending == 1) "" else "s"} waiting to drift downstream.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
             )
             Button(
                 onClick = onApply,
@@ -278,11 +287,13 @@ private fun FinishedView(pending: Int, onApply: () -> Unit) {
                 ),
             ) {
                 Icon(Icons.Default.Delete, contentDescription = null)
-                Spacer(Modifier.height(0.dp))
                 Text("  Move to Trash")
             }
         } else {
-            Text("Nothing to trash.", color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                "Nothing left to release.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+            )
         }
     }
 }

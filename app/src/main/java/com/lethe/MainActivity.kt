@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.lethe.ui.HomeScreen
 import com.lethe.ui.SwipeScreen
 import com.lethe.ui.theme.LetheTheme
@@ -31,6 +32,7 @@ import com.lethe.ui.theme.LetheTheme
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
             LetheTheme {

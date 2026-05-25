@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.lethe.data.Photo
-import com.lethe.ui.theme.LetheGreen
-import com.lethe.ui.theme.LetheRed
-import com.lethe.ui.theme.LetheSurface
+import com.lethe.ui.theme.LetheDiscard
+import com.lethe.ui.theme.LetheKeep
+import com.lethe.ui.theme.LetheMidnightSoft
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -33,7 +33,7 @@ fun PhotoCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .background(LetheSurface),
+            .background(LetheMidnightSoft),
     ) {
         AsyncImage(
             model = photo.uri,
@@ -44,7 +44,7 @@ fun PhotoCard(
 
         val progress = min(abs(swipeOffset) / swipeThreshold, 1f)
         if (progress > 0.02f) {
-            val tint = if (swipeOffset < 0) LetheRed else LetheGreen
+            val tint = if (swipeOffset < 0) LetheDiscard else LetheKeep
             Box(
                 Modifier
                     .fillMaxSize()
