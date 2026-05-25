@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lethe.data.Photo
 import com.lethe.data.PhotoRepository
+import com.lethe.data.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,34 +29,45 @@ data class SwipeUiState(
 class SwipeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = PhotoRepository(app.contentResolver)
+    private val session = SessionStore(app)
 
     private val _state = MutableStateFlow(SwipeUiState())
     val state: StateFlow<SwipeUiState> = _state.asStateFlow()
 
-    fun load() {
+    private var loadedBucket: String? = null
+
+    fun load(bucketId: String?) {
+        loadedBucket = bucketId
         viewModelScope.launch {
-            _state.update { it.copy(loading = true) }
-            val photos = repo.loadAll()
+            _state.update { SwipeUiState(loading = true) }
+            val processed = session.loadProcessed()
+            val pending = session.loadPendingTrash()
+            val photos = repo.loadPhotos(bucketId).filter { it.id !in processed }
             _state.update {
-                SwipeUiState(loading = false, photos = photos)
+                SwipeUiState(
+                    loading = false,
+                    photos = photos,
+                    pendingTrash = pending,
+                )
             }
         }
     }
 
     fun keep() {
+        val cur = _state.value.current ?: return
+        session.addProcessed(listOf(cur.id))
         _state.update {
-            if (it.current == null) it
-            else it.copy(index = it.index + 1, kept = it.kept + 1)
+            it.copy(index = it.index + 1, kept = it.kept + 1)
         }
     }
 
     fun discard() {
-        _state.update {
-            val cur = it.current ?: return@update it
-            it.copy(
-                index = it.index + 1,
-                pendingTrash = it.pendingTrash + cur.uri,
-            )
+        val cur = _state.value.current ?: return
+        session.addProcessed(listOf(cur.id))
+        _state.update { st ->
+            val next = st.pendingTrash + cur.uri
+            session.savePendingTrash(next)
+            st.copy(index = st.index + 1, pendingTrash = next)
         }
     }
 
@@ -70,6 +82,7 @@ class SwipeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun onTrashConfirmed() {
+        session.clearPendingTrash()
         _state.update { it.copy(pendingTrash = emptyList()) }
     }
 }

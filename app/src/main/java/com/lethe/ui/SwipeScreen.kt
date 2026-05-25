@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
@@ -26,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,7 +52,11 @@ import com.lethe.viewmodel.SwipeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
+fun SwipeScreen(
+    bucketId: String?,
+    onBack: () -> Unit,
+    viewModel: SwipeViewModel = viewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
@@ -62,7 +68,7 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
         }
     }
 
-    LaunchedEffect(Unit) { viewModel.load() }
+    LaunchedEffect(bucketId) { viewModel.load(bucketId) }
 
     val flush: () -> Unit = {
         viewModel.buildTrashRequest()?.let { pi ->
@@ -77,12 +83,21 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "Lethe",
-                fontWeight = FontWeight.Black,
-                fontSize = 28.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back to albums",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+                Text(
+                    text = "Lethe",
+                    fontWeight = FontWeight.Black,
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val remaining = (state.photos.size - state.index).coerceAtLeast(0)
                 Text(

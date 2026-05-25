@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.lethe.ui.HomeScreen
 import com.lethe.ui.SwipeScreen
 import com.lethe.ui.theme.LetheTheme
 
@@ -38,11 +39,24 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     PermissionGate {
-                        SwipeScreen()
+                        AppNav()
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun AppNav() {
+    var bucketId by remember { mutableStateOf<String?>(null) }
+    if (bucketId == null) {
+        HomeScreen(onAlbumPicked = { bucketId = it })
+    } else {
+        SwipeScreen(
+            bucketId = bucketId,
+            onBack = { bucketId = null },
+        )
     }
 }
 
