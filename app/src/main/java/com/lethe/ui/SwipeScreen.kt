@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -104,6 +105,15 @@ fun SwipeScreen(
                     text = "$remaining left",
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                if (state.index > 0) {
+                    IconButton(onClick = { viewModel.undo() }) {
+                        Icon(
+                            Icons.Default.Undo,
+                            contentDescription = "Undo last swipe",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        )
+                    }
+                }
                 if (state.pendingTrash.isNotEmpty()) {
                     TextButton(onClick = flush) {
                         Icon(

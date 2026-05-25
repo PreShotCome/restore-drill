@@ -21,6 +21,13 @@ class SessionStore(context: Context) {
             .apply()
     }
 
+    fun removeProcessed(id: Long) {
+        val current = prefs.getStringSet(KEY_PROCESSED, emptySet()) ?: emptySet()
+        prefs.edit()
+            .putStringSet(KEY_PROCESSED, current - id.toString())
+            .apply()
+    }
+
     fun loadPendingTrash(): List<Uri> =
         prefs.getStringSet(KEY_PENDING, emptySet())
             ?.map(Uri::parse)

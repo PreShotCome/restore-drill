@@ -71,6 +71,23 @@ class SwipeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun undo() {
+        val st = _state.value
+        if (st.index == 0) return
+        val prev = st.photos[st.index - 1]
+        session.removeProcessed(prev.id)
+        val wasDiscarded = st.pendingTrash.lastOrNull() == prev.uri
+        val newPending = if (wasDiscarded) st.pendingTrash.dropLast(1) else st.pendingTrash
+        if (wasDiscarded) session.savePendingTrash(newPending)
+        _state.update {
+            it.copy(
+                index = it.index - 1,
+                pendingTrash = newPending,
+                kept = if (wasDiscarded) it.kept else (it.kept - 1).coerceAtLeast(0),
+            )
+        }
+    }
+
     fun buildTrashRequest(): android.app.PendingIntent? {
         val uris = _state.value.pendingTrash
         if (uris.isEmpty()) return null
