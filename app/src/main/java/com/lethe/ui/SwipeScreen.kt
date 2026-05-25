@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +64,12 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
 
     LaunchedEffect(Unit) { viewModel.load() }
 
+    val flush: () -> Unit = {
+        viewModel.buildTrashRequest()?.let { pi ->
+            trashLauncher.launch(IntentSenderRequest.Builder(pi).build())
+        }
+    }
+
     Column(Modifier.fillMaxSize().padding(16.dp)) {
 
         Row(
@@ -76,11 +83,28 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
                 fontSize = 28.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            val remaining = (state.photos.size - state.index).coerceAtLeast(0)
-            Text(
-                text = "$remaining left  ·  ${state.pendingTrash.size} to trash",
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val remaining = (state.photos.size - state.index).coerceAtLeast(0)
+                Text(
+                    text = "$remaining left",
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (state.pendingTrash.isNotEmpty()) {
+                    TextButton(onClick = flush) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Apply trash",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        Spacer(Modifier.height(0.dp))
+                        Text(
+                            text = " ${state.pendingTrash.size}",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+            }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -99,19 +123,11 @@ fun SwipeScreen(viewModel: SwipeViewModel = viewModel()) {
                 )
                 state.finished -> FinishedView(
                     pending = state.pendingTrash.size,
-                    onApply = {
-                        viewModel.buildTrashRequest()?.let { pi ->
-                            trashLauncher.launch(IntentSenderRequest.Builder(pi).build())
-                        }
-                    },
+                    onApply = flush,
                 )
                 else -> SwipeStack(
                     viewModel = viewModel,
-                    onAutoFlush = {
-                        viewModel.buildTrashRequest()?.let { pi ->
-                            trashLauncher.launch(IntentSenderRequest.Builder(pi).build())
-                        }
-                    },
+                    onAutoFlush = flush,
                 )
             }
         }
@@ -202,7 +218,7 @@ private fun SwipeStack(
                                 v < -threshold -> scope.launch {
                                     offsetX.animateTo(-screenWidthPx * 1.5f, tween(220))
                                     viewModel.discard()
-                                    if (state.pendingTrash.size + 1 >= 60) onAutoFlush()
+                                    if (state.pendingTrash.size + 1 >= 30) onAutoFlush()
                                 }
                                 else -> scope.launch { offsetX.animateTo(0f, spring()) }
                             }
