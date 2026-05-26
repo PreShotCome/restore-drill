@@ -36,17 +36,22 @@ class SwipeViewModel(app: Application) : AndroidViewModel(app) {
 
     private var loadedBucket: String? = null
 
-    fun load(bucketId: String?) {
+    fun load(bucketId: String?, startAtId: Long? = null, skipProcessed: Boolean = true) {
         loadedBucket = bucketId
         viewModelScope.launch {
             _state.update { SwipeUiState(loading = true) }
             val processed = session.loadProcessed()
             val pending = session.loadPendingTrash()
-            val photos = repo.loadPhotos(bucketId).filter { it.id !in processed }
+            val all = repo.loadPhotos(bucketId)
+            val photos = if (skipProcessed) all.filter { it.id !in processed } else all
+            val startIdx = if (startAtId != null) {
+                photos.indexOfFirst { it.id == startAtId }.coerceAtLeast(0)
+            } else 0
             _state.update {
                 SwipeUiState(
                     loading = false,
                     photos = photos,
+                    index = startIdx,
                     pendingTrash = pending,
                 )
             }
@@ -56,8 +61,14 @@ class SwipeViewModel(app: Application) : AndroidViewModel(app) {
     fun keep() {
         val cur = _state.value.current ?: return
         session.addProcessed(listOf(cur.id))
-        _state.update {
-            it.copy(index = it.index + 1, kept = it.kept + 1)
+        _state.update { st ->
+            val newPending = st.pendingTrash - cur.uri
+            if (newPending.size != st.pendingTrash.size) session.savePendingTrash(newPending)
+            st.copy(
+                index = st.index + 1,
+                kept = st.kept + 1,
+                pendingTrash = newPending,
+            )
         }
     }
 
@@ -65,8 +76,8 @@ class SwipeViewModel(app: Application) : AndroidViewModel(app) {
         val cur = _state.value.current ?: return
         session.addProcessed(listOf(cur.id))
         _state.update { st ->
-            val next = st.pendingTrash + cur.uri
-            session.savePendingTrash(next)
+            val next = if (cur.uri in st.pendingTrash) st.pendingTrash else st.pendingTrash + cur.uri
+            if (next.size != st.pendingTrash.size) session.savePendingTrash(next)
             st.copy(index = st.index + 1, pendingTrash = next)
         }
     }

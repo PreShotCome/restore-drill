@@ -58,6 +58,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SwipeScreen(
     bucketId: String?,
+    startAtId: Long? = null,
+    skipProcessed: Boolean = true,
     onBack: () -> Unit,
     viewModel: SwipeViewModel = viewModel(),
 ) {
@@ -72,7 +74,9 @@ fun SwipeScreen(
         }
     }
 
-    LaunchedEffect(bucketId) { viewModel.load(bucketId) }
+    LaunchedEffect(bucketId, startAtId, skipProcessed) {
+        viewModel.load(bucketId, startAtId, skipProcessed)
+    }
 
     val flush: () -> Unit = {
         viewModel.buildTrashRequest()?.let { pi ->

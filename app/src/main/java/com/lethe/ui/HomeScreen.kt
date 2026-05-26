@@ -42,7 +42,7 @@ import com.lethe.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    onAlbumPicked: (String) -> Unit,
+    onAlbumPicked: (id: String, name: String) -> Unit,
     viewModel: HomeViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -97,7 +97,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     items(state.albums, key = { it.id }) { album ->
-                        AlbumTile(album = album, onClick = { onAlbumPicked(album.id) })
+                        AlbumTile(album = album, onClick = { onAlbumPicked(album.id, album.name) })
                     }
                 }
             }

@@ -25,9 +25,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.lethe.ui.AlbumPreviewScreen
 import com.lethe.ui.HomeScreen
 import com.lethe.ui.SwipeScreen
 import com.lethe.ui.theme.LetheTheme
+
+private sealed class Route {
+    data object Home : Route()
+    data class Preview(val bucketId: String, val name: String) : Route()
+    data class Swipe(
+        val bucketId: String,
+        val name: String,
+        val startAtId: Long?,
+        val skipProcessed: Boolean,
+    ) : Route()
+}
 
 class MainActivity : ComponentActivity() {
 
@@ -51,13 +63,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun AppNav() {
-    var bucketId by remember { mutableStateOf<String?>(null) }
-    if (bucketId == null) {
-        HomeScreen(onAlbumPicked = { bucketId = it })
-    } else {
-        SwipeScreen(
-            bucketId = bucketId,
-            onBack = { bucketId = null },
+    var route by remember { mutableStateOf<Route>(Route.Home) }
+    when (val r = route) {
+        Route.Home -> HomeScreen(
+            onAlbumPicked = { id, name -> route = Route.Preview(id, name) },
+        )
+        is Route.Preview -> AlbumPreviewScreen(
+            bucketId = r.bucketId,
+            albumName = r.name,
+            onBack = { route = Route.Home },
+            onStartSwipe = { startAtId, skipProcessed ->
+                route = Route.Swipe(r.bucketId, r.name, startAtId, skipProcessed)
+            },
+        )
+        is Route.Swipe -> SwipeScreen(
+            bucketId = r.bucketId,
+            startAtId = r.startAtId,
+            skipProcessed = r.skipProcessed,
+            onBack = { route = Route.Preview(r.bucketId, r.name) },
         )
     }
 }
